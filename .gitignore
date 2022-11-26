@@ -1,0 +1,11 @@
+# Folders
+node_modules
+build
+
+# Lock files
+package-lock.json
+yarn.lock
+
+# Secrets
+.env
+secrets.json
