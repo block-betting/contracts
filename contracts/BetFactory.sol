@@ -6,16 +6,34 @@ import "./BettingContract.sol";
 
 contract BetFactory {
     uint256 public counter;
-    event LaunchedBet(address indexed betAddress, address indexed owner, uint256 betId);
+    event LaunchedBet(address indexed betAddress, address indexed owner, uint256 betId, string betName);
 
     constructor() {
         counter = 0;
     }
 
-    function launchBet(string[] memory _teams) external {
+    struct BetList {
+        address betAddress;
+        address owner;
+        uint256 betId;
+        string betName;
+        uint timestamp;
+    }
+
+    mapping (uint256 => BetList) public betLists;
+
+    function launchBet(string[] memory _teams, string memory _betName) external {
         BettingContract bet = new BettingContract(_teams);
         counter++;
         bet.transferOwnership(msg.sender);
-        emit LaunchedBet(address(bet), msg.sender, counter);
+
+        betLists[counter] = BetList(
+            address(bet), 
+            msg.sender, 
+            counter, 
+            _betName, 
+            block.timestamp);
+
+        emit LaunchedBet(address(bet), msg.sender, counter, _betName);
     }
 }
